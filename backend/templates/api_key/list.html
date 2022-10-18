@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock title %}
+{% block content %}
+    <div class="row">
+        <div class="col-lg-12">
+          <h2>{{ title }}</h2>
+
+          {% include "helpers/alerts.html" %}
+
+          <a href="{% url 'apikey_form' 0 %}" class="btn btn-primary">Добавить</a>
+          {% if list.count > 0 %}
+            <table class="table table-condensed">
+              <tr>
+                <th>Id</th>
+                <th>Включен?</th>
+                <th>Используется?</th>
+                <th>Магазин</th>
+                <th>Название</th>
+                <th>Client Id</th>
+                <th></th></tr>
+              {% for row in list %}
+                <tr>
+                  <td>{{ row.id }}</td>
+                  <td>{% if row.is_active %}✅{% else %}⭕{% endif %}</td>
+                  <td>{% if row.is_disabled %}
+                        <span data-bs-toggle="tooltip"
+                              data-bs-html="true"
+                              data-bs-custom-class="tooltip_api"
+                              data-bs-placement="bottom" title="Время, когда ключ будет использоваться">⭕{{ row.disabled_till|date:'Y-m-d H:i' }}</span>
+                      {% else %}✅{% endif %}</td>
+                  <td>{{ row.shop }}</td>
+                  <td>{{ row.name }}</td>
+                  <td>{{ row.client_id }}</td>
+                  <td>
+                      <a href="{% url 'apikey_form' row.id %}" class="btn btn-outline-secondary">Изменить</a>
+                      <a href="{% url 'apikey_delete' row.id %}" class="btn btn-outline-danger">Удалить</a>
+                  </td></tr>
+              {% endfor %}
+            </table>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock content %}

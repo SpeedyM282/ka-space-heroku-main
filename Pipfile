@@ -1,0 +1,31 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+django = "*"
+django-allauth = "*"
+dj-rest-auth = "*"
+django-cors-headers = "*"
+black = "*"
+django-crispy-forms = "*"
+psycopg2 = "*"
+uvicorn = "*"
+httpx = "*"
+sentry-sdk = "*"
+celery = {extras = ["redis"], version = "*"}
+flower = "*"
+lockfile = "*"
+django-redis = "*"
+djangorestframework-simplejwt = "*"
+gunicorn = "*"
+whitenoise = "*"
+dj-database-url = "*"
+
+[dev-packages]
+black = "*"
+fabric = "*"
+
+[requires]
+python_version = "3.9"

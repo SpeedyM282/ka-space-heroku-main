@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+    <div class="row justify-content-md-center">
+        <div class="col-lg-4">
+            {% include "helpers/alerts.html" %}
+
+            {% if form.errors %}
+                <div class="alert alert-danger" role="alert">
+                    <p>Your username and password didn't match. Please try again.</p>
+                </div>
+            {% endif %}
+
+            {% if next %}
+                <div class="alert alert-info" role="alert">
+                    {% if user.is_authenticated %}
+                        <p>У вашего аккаунта отсутсвуют права доступа к этой странице. Авторизуйтесь в аккаунт с необходимыми правами.</p>
+                    {% else %}
+                        <p>Пожалуйста, авторизуйтесь для доступа к этой странице.</p>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            {% load crispy_forms_tags %}
+
+            <form method="post" action="{% url 'login' %}">
+                {% csrf_token %}
+                <div class="mb-3">
+                    {{ form.username|as_crispy_field }}
+                </div>
+                <div class="mb-3">
+                    {{ form.password|as_crispy_field }}
+                </div>
+
+                <input class="btn btn-primary" type="submit" value="Войти" />
+                <input type="hidden" name="next" value="{{ next }}" />
+            </form>
+
+            {# Assumes you setup the password_reset view in your URLconf #}
+            <p><a href="{% url 'password_reset' %}">Забыли пароль?</a></p>
+            <p>Нет учетной записи? <a href="{% url 'register' %}">Регистрируйтесь.</a></p>
+        </div>
+    </div>
+
+{% endblock %}

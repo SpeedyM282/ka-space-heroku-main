@@ -1,0 +1,1 @@
+web: gunicorn ka_space.wsgi --chdir backend --log-file -

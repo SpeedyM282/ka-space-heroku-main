@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock title %}
+{% block content %}
+
+<script src="https://unpkg.com/vue@3"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="https://unpkg.com/vue3-easy-data-table"></script>
+
+{% verbatim %}
+<div id="app">
+    <p>{{ message }}</p>
+
+    <div >
+        <easy-data-table
+            dense
+            class="easy-table-ka"
+            :headers="headers"
+            :items="products"
+            :rows-per-page="10"
+            :body-row-class-name="bodyRowClassNameFunction"
+            :body-item-class-name="bodyItemClassNameFunction"
+        >
+            <template #item-img="{ primary_image, name }">
+                <div style="height: 60px">
+                    <img :src="primary_image" :title="name" width="40"/>
+                </div>
+            </template>
+            <template #item-offer_id="{ offer_id }">
+                <div class="text-truncate" style="max-width: 200px" >{{offer_id}}</div>
+            </template>
+            <template #item-name="{ name }">
+                <div class="text-truncate" style="max-width: 100px" :title="name">{{name}}</div>
+            </template>
+            <template #item-price_index="{ price_index }">
+                <template v-if="price_index != 0">{{price_index}}</template>
+            </template>
+            <template #item-images360_cnt="{ images360_cnt }">
+                <template v-if="images360_cnt != 0">{{images360_cnt}}</template>
+            </template>
+            <template #item-fbo_present="{ fbo_present }">
+                <template v-if="fbo_present != 0">{{fbo_present}}</template>
+            </template>
+            <template #item-fbo_reserved="{ fbo_reserved }">
+                <template v-if="fbo_reserved != 0">{{fbo_reserved}}</template>
+            </template>
+        </easy-data-table>
+    </div>
+
+</div>
+{% endverbatim %}
+
+<script>
+const { createApp } = Vue;
+
+createApp({
+    components: {
+        EasyDataTable: window['vue3-easy-data-table'],
+    },
+    data() {
+        return {
+            message: 'Loading products! You can find products in then Console!',
+            products: [],
+            info: null,
+            headers:[
+                { text: "", value: "img", fixed: true, width: 50 },
+                { text: "Артикул", value: "offer_id", fixed: true, sortable: true, width: 200 },
+                { text: "SKU", value: "fbo_sku", sortable: true },
+                { text: "Название", value: "name", sortable: true, width: 150 },
+                { text: "Индекс Цены", value: "price_index", sortable: true },
+                { text: "Мин. Цена", value: "min_price", sortable: true },
+                { text: "Цена", value: "marketing_price", sortable: true },
+                { text: "Доп. Картинки", value: "images_cnt", sortable: true },
+                { text: "Фото 360", value: "images360_cnt", sortable: true },
+                { text: "FBO", value: "fbo_present", sortable: true },
+                { text: "FBO Резерв", value: "fbo_reserved", sortable: true },
+                { text: "FBS", value: "fbs_present", sortable: true },
+                { text: "FBO Резерв", value: "fbs_reserved", sortable: true },
+                { text: "Рекламные Кампании", value: "campaign_cnt", sortable: true },
+                { text: "Акции", value: "action_cnt", sortable: true },
+                { text: "Комиссия", value: "commission", sortable: true },
+                { text: "Объемный Вес", value: "volume_weight", sortable: true },
+                { text: "Магазин", value: "shop" },
+            ],
+            bodyRowClassNameFunction: function (item, index) {
+                // console.log(item, index);
+            },
+            bodyItemClassNameFunction: function (column, index) {
+                // console.log(column, index);
+            }
+        }
+    },
+    mounted() {
+        let $this = this
+        axios.get('/api/products/?no_convert_decimal', {
+            params: {}
+        })
+        .then(function (response) {
+            console.log(response);
+            data = response.data
+            if (typeof data.Error != 'undefined') {
+                $this.message = data.Error
+            } else {
+                $this.message = "Ready!"
+                $this.products = response.data.result.items
+            }
+            console.log($this.message)
+        })
+        .catch(function (error) {
+            $this.message = error
+            console.log(error)
+        })
+        .then(response => (this.info = 'Info Loaded'));
+    },
+}).mount('#app')
+</script>
+
+{% endblock content %}

@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock title %}
+{% block content %}
+    <div class="row">
+        <div class="col-lg-12">
+            <h2>{{ title }}</h2>
+
+            {% include "helpers/alerts.html" %}
+
+        </div>
+    </div>
+
+<script src="https://unpkg.com/vue@3"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+{% verbatim %}
+<div id="app">{{ message }}</div>
+{% endverbatim %}
+
+<script>
+  const { createApp } = Vue;
+
+  createApp({
+    data() {
+
+      // axios.get('/api/products/', {
+      //   params: {}
+      // })
+      // .then(function (response) {
+      //   console.log(response);
+      // })
+      // .catch(function (error) {
+      //   console.log(error);
+      // })
+      // .then(function () {
+      //   // always executed
+      // });
+
+      return {
+        message: "I'm ready to work through VueJS!"
+      }
+    }
+  }).mount('#app')
+</script>
+
+    <div class="row mt-4">
+        <div class="col-lg-12">
+          <table class="table table-condensed">
+            <tr>
+              <th>Пользователь</th>
+              <th>Магазин</th>
+              <th>Ключи</th>
+              <th>Товары</th>
+              <th>Аналитика</th>
+              <th>Кампании</th>
+              <th>Реклама</th>
+              <th>Отчеты</th>
+              <th>Транзакции</th>
+              <th>FBO</th>
+              <th>FBS</th></tr>
+            {% for row in shops %}
+                <tr>
+                  <td>{{ row.user }}</td>
+                  <td><span data-bs-toggle="tooltip"
+                            data-bs-html="true"
+                            data-bs-custom-class="tooltip_api"
+                            data-bs-placement="bottom" title="{{ row.keys_titles|safe }}">
+                    {% if row.is_active %}✅{% else %}⭕{% endif %} {{ row.shop }}</span></td>
+                  <td>{{ row.keys }}</td>
+                  <td>{{ row.products|default_if_none:"0" }}</td>
+                  <td>{{ row.analytics|default_if_none:"0" }}</td>
+                  <td>{{ row.campaigns|default_if_none:"0" }}</td>
+                  <td>{{ row.advertizing|default_if_none:"0" }}</td>
+                  <td>{{ row.report|default_if_none:"-" }}</td>
+                  <td>{{ row.transactions|default_if_none:"0" }}</td>
+                  <td>{{ row.fbo|default_if_none:"0" }}</td>
+                  <td>{{ row.fbs|default_if_none:"0" }}</td>
+                </tr>
+              {% endfor %}
+          </table>
+    </div>
+
+{% endblock content %}

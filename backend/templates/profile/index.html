@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock title %}
+{% block content %}
+    <div class="row">
+        <div class="col-lg-12">
+            <h2>Профиль: {{ title }}</h2>
+
+            {% include "helpers/alerts.html" %}
+
+            <div class="row">
+              <div class="col-lg-6">
+                <h4>Данные:</h4>
+                <p>Магазины: {{ statistics.shops }}</p>
+                <p>Ключи: <span data-bs-toggle="tooltip"
+                                data-bs-html="true"
+                                data-bs-custom-class="tooltip_api"
+                                data-bs-placement="bottom" title="{{ keys_titles|safe }}">{{ statistics.keys }}</span></p>
+
+                {{ locking_test }}
+              </div>
+
+              <div class="col-lg-6">
+                {% load crispy_forms_tags %}
+                <form method="POST" action="">
+                  {% csrf_token %}
+                  <input type="hidden" name="action" value="new_token"/>
+                    <h4>Токен <input type="submit" class="btn btn-sm btn-primary" value="Обновить токен"></h4>
+                </form>
+                <div class="row">
+                    <div class="col-md-3"><input type="text" readonly value="Authorization" class="form-control col-md-6" onfocus="select()" /></div> 
+                    <div class="col-md-9"><input type="text" readonly value="Token {{ token }}" class="form-control col-md-6" onfocus="select()"/></div>
+                </div>
+              </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-lg-6">
+            <h4>API.Товары ({{ statistics.ozon_products }})</h4>
+            <input type="text" readonly class="form-control monospace" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.get_host }}/api/products/" onfocus="select()"/>
+        </div>
+        <div class="col-lg-6">
+            <h4>API.Аналитика ({{ statistics.ozon_analytics }})</h4>
+            <input type="text" readonly class="form-control monospace" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.get_host }}/api/analytics/" onfocus="select()"/>
+        </div>
+        <div class="col-lg-6">
+            <h4>API.Реклама ({{ statistics.ozon_advertizing }})</h4>
+            <input type="text" readonly class="form-control monospace" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.get_host }}/api/advertizing/" onfocus="select()"/>
+        </div>
+        <div class="col-lg-6">
+            <h4>API.Транзакции ({{ statistics.ozon_transactions }})</h4>
+            <input type="text" readonly class="form-control monospace" value="{% if request.is_secure %}https{% else %}http{% endif %}://{{ request.get_host }}/api/transactions/" onfocus="select()"/>
+        </div>
+        <div class="col-lg-6">
+            <h4>Общие (JMESPath Query)</h4>
+            <input type="text" readonly class="form-control monospace" value="result.items" onfocus="select()"/>
+        </div>
+        
+    </div>
+
+{% endblock content %}

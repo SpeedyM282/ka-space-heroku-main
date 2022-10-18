@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% load static %}
+    <meta charset="utf-8" />
+    <title>KA - {% block title%}{% endblock title %} - Культура Аналитики</title>
+    <link href="{% static 'libs/css/bootstrap.min.css' %}" rel="stylesheet" crossorigin="anonymous">
+
+    <link href="https://unpkg.com/vue3-easy-data-table/dist/style.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}?{% now "Y-m-d" %}">
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">Культура Аналитики</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                    {% comment %}<li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/">Главная</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/contact">Contacts</a>
+                    </li>{% endcomment %}
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'selfbuys' %}">Самовыкупы</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="{% url 'shops' %}" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Магазины
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="{% url 'shops' %}">Магазины</a>
+                                <a class="dropdown-item" href="{% url 'apikeys' %}">API-ключи</a>
+                            </div>
+                        </li>
+                        {% if request.user.is_staff %}
+                        {% comment %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="{% url 'bot_emails' %}" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                🤖 Бот
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="{% url 'bot_emails' %}">Email-ы</a>
+                                <a class="dropdown-item" href="{% url 'bot_profiles' %}">Профили</a>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="{% url 'products' %}" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Товары
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="{% url 'products' %}">Товары</a>
+                            </div>
+                        </li>
+                        {% endcomment %}
+                        {% endif %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="{% url 'help_connect' %}" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                ⛑️ Помощь
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <a class="dropdown-item" href="{% url 'help_connect' %}">Подключение</a>
+                            </div>
+                        </li>
+                    {% endif %}
+                </ul>
+
+                <ul class="navbar-nav pull-right">
+                  {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          {{ user.get_username }}
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                          <a class="dropdown-item" href="{% url 'profile'%}">Настройки</a>
+                          {% if request.user.is_staff %}
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="{% url 'admin_dashboard' %}">🖥️️ Дашборд</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/admin/" target="_blank">Админка</a>
+                          {% endif %}
+                        </div>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-outline-danger" href="{% url 'logout'%}?next={{request.path}}">Выход</a>
+                    </li>
+                  {% else %}
+                    <li class="nav-item">
+                        <a class="btn btn-outline-light me-2" href="{% url 'login'%}?next={{request.path}}">Вход</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="btn btn-warning" href="{% url 'register'%}">Регистрация</a>
+                    </li>
+                  {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<main class=" py-5">
+
+    <div class="container">
+
+        {% block content%}{% endblock content %}
+
+    </div><!-- /.container -->
+
+</main>
+
+<!-- FOOTER -->
+<footer class="footer">
+    <div class="container">
+        <hr/>
+
+        <p class="float-end"><a href="#">Наверх</a></p>
+        <p>&copy; 2022 Культура Аналитики от Александра Румянцева &middot; <a href="#">Пользовательское соглашение</a> &middot; <a href="#">Оферта</a></p>
+    </div>
+</footer>
+
+
+<script src="{% static 'libs/js/bootstrap.bundle.min.js' %}" crossorigin="anonymous"></script>
+<script type="text/javascript">
+const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+  return new bootstrap.Tooltip(tooltipTriggerEl)
+})
+</script>
+</body>
+</html>
